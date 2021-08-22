@@ -4,20 +4,20 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"login/pkg/model/dto"
 )
 
 type  DynamoDB struct{
 	Dynamo  *dynamodb.DynamoDB
-	Login Methods
+	CheckDevice Methods
 }
 
 type Methods struct {
-	LoginLogic methods
+	CheckDeviceLogic methods
 }
 
 type methods interface {
-	GetLoginUser(req dto.LoginReq)error
+	CheckDeviceExist(deviceID string)error
+	CheckDeviceMotion(deviceID string)(int,error)
 }
 
 func New()(*DynamoDB,error){
@@ -25,10 +25,10 @@ func New()(*DynamoDB,error){
 	svc := dynamodb.New(session.New(), aws.NewConfig().WithRegion("ap-northeast-1"))
 
 	// init methods
-	loginMethod := newLoginClient(svc)
+	checkDeviceMethod := newCheckDeviceClient(svc)
 
 	return &DynamoDB{
 		Dynamo:  svc,
-		Login: Methods{loginMethod},
+		CheckDevice: Methods{checkDeviceMethod},
 	},nil
 }

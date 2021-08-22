@@ -1,4 +1,4 @@
-module login
+module checkDevice
 
 go 1.16
 

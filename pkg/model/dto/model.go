@@ -1,15 +1,15 @@
 package dto
 
-type LoginReq struct{
-	UserID string `dynamodbav:"userID" json:"userID"`
-	Password string `dynamodbav:"password" json:"password"`
+type DeviceInfo struct{
+	DeviceID string `dynamodbav:"deviceID"`
 }
 
-
-type User struct{
-	UserID string `dynamodbav:"userID"`
-	Created int `dynamodbav:"createdAt"`
-	Password string `dynamodbav:"password"`
+type SensorData  struct{
+	SensorID string `dynamodbav:"sensorID" json:"sensorID"`
+	Timestamp int `dynamodbav:"timestamp" json:"timestamp"`
+	Co2 int `dynamodbav:"co2" json:"co2"`
+	Hum float64 `dynamodbav:"hum" json:"hum"`
+	Temp float64 `dynamodbav:"temp" json:"temp"`
 }
 
 type Response struct{

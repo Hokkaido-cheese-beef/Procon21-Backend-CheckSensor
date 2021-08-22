@@ -5,20 +5,20 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"log"
-	"login/pkg/model/dao"
-	"login/pkg/model/dto"
-	"login/pkg/res"
+	"checkDevice/pkg/model/dao"
+	"checkDevice/pkg/model/dto"
+	"checkDevice/pkg/res"
 )
 
 
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse,error) {
-	var req dto.LoginReq
 	var response dto.Response
-	err :=json.Unmarshal([]byte(request.Body), &req)
-	if err != nil {
-		log.Println(err)
-		return res.ReturnInternalServerErrorResponse(err)
+	deviceId:= request.PathParameters["deviceID"]
+	if deviceId == "" {
+		response.ErrorMessage="deviceID is null"
+		responseBody, _ := json.Marshal(response)
+		return res.ReturnBadRequestResponse(string(responseBody)), nil
 	}
 
 	client, err := dao.New()
@@ -27,18 +27,25 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return res.ReturnInternalServerErrorResponse(err)
 	}
 
-	err = client.Login.LoginLogic.GetLoginUser(req)
+	err = client.CheckDevice.CheckDeviceLogic.CheckDeviceExist(deviceId)
 	if err != nil {
-		if err.Error()=="user is not exits" {
-			response.ErrorMessage="user is not exits"
-			responseBody, _ := json.Marshal(response)
-			return res.ReturnBadRequestResponse(string(responseBody)), nil
-		}else if err.Error()=="password is wrong"{
-			response.ErrorMessage="password is wrong"
+		if err.Error()=="deviceID is wrong" {
+			response.ErrorMessage = "deviceID is wrong"
 			responseBody, _ := json.Marshal(response)
 			return res.ReturnBadRequestResponse(string(responseBody)), nil
 		}
 		return res.ReturnInternalServerErrorResponse(err)
+	}
+
+	status,err := client.CheckDevice.CheckDeviceLogic.CheckDeviceMotion(deviceId)
+	if err != nil {
+		log.Println(err)
+		return res.ReturnInternalServerErrorResponse(err)
+	}
+	if status ==1{
+		response.ErrorMessage="action"
+	}else if status ==0{
+		response.ErrorMessage="not action"
 	}
 
 	responseBody, _ := json.Marshal(response)
