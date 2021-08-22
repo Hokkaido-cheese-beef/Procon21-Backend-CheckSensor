@@ -1,37 +1,33 @@
-# Procon21-Backend-Login
+# Procon2021CheckDevice
 
 ## 基本仕様
 ---
 ### 概要
-ユーザーのログイン認証を行います。
+デバイスの動作確認を行います。
 
 ### 特徴
-今回の使用は特にパスワードを暗号化する、JWTを使用した使用にするｍなどといったことはしていません。
-ユーザーが存在するか、パスワードが違っていないかを確認し認証します。
+リクエストで渡されたデバイスが動作しているかどうか確認します。
 
 ## 機能仕様
-- HTTP method:POST
-- endpoint:/login
+- HTTP method:GET
+- endpoint:/sensor/{ここにdeviceID}
 
 ---
 ### 利用法
 
-- endpoint:/login
-
-#### request
-```cassandraql
-{
-    "userID":"0001",
-    "password":"0001"
-}
-```
+- endpoint:/sensor/{ここにdeviceID}
 
 ####  resqonse
 ```cassandraql
 {
-  "errorMessage": ""
+  "Message": "action"
+}
+or
+{
+  "Message": "not action"
 }
 ```
+他にもIDが正しくない場合もメッセージを返却します。
 
 ---
 ### アーキテクチャ
