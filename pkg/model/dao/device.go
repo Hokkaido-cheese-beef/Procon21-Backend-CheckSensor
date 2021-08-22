@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -25,7 +24,7 @@ func (r *checkDeviceClientMethods) 	CheckDeviceExist(deviceID string)error {
 		TableName: aws.String("deviceInfo"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"deviceID": {
-				N: aws.String(deviceID),
+				S: aws.String(deviceID),
 			},
 		},
 	}
@@ -88,8 +87,11 @@ func (r *checkDeviceClientMethods)CheckDeviceMotion(deviceID string)(int,error){
 		}
 	}
 
-	if sensorData.Co2==0 && sensorData.Hum==0 && sensorData.Temp==0{
-		return 0,err
+	if sensorData.Co2==0 && int(sensorData.Hum)==0 && int(sensorData.Temp)==0{
+		return 0,nil
+	}else if sensorData.SensorID==""{
+		return 0,nil
 	}
+
 	return 1,nil
 }

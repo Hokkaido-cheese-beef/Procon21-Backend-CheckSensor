@@ -16,7 +16,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	var response dto.Response
 	deviceId:= request.PathParameters["deviceID"]
 	if deviceId == "" {
-		response.ErrorMessage="deviceID is null"
+		response.Message="deviceID is null"
 		responseBody, _ := json.Marshal(response)
 		return res.ReturnBadRequestResponse(string(responseBody)), nil
 	}
@@ -30,7 +30,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	err = client.CheckDevice.CheckDeviceLogic.CheckDeviceExist(deviceId)
 	if err != nil {
 		if err.Error()=="deviceID is wrong" {
-			response.ErrorMessage = "deviceID is wrong"
+			response.Message = "deviceID is wrong"
 			responseBody, _ := json.Marshal(response)
 			return res.ReturnBadRequestResponse(string(responseBody)), nil
 		}
@@ -42,10 +42,11 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		log.Println(err)
 		return res.ReturnInternalServerErrorResponse(err)
 	}
-	if status ==1{
-		response.ErrorMessage="action"
-	}else if status ==0{
-		response.ErrorMessage="not action"
+
+	if status == 1{
+		response.Message="action"
+	}else if status == 0{
+		response.Message="not action"
 	}
 
 	responseBody, _ := json.Marshal(response)

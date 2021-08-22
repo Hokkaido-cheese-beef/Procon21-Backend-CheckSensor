@@ -13,5 +13,5 @@ type SensorData  struct{
 }
 
 type Response struct{
-	ErrorMessage string `json:"errorMessage"`
+	Message string `json:"Message"`
 }
